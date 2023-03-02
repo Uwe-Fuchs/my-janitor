@@ -1,2 +1,2 @@
 # my-janitor
-rebuild janitor-tutorial with current dependencies
+rebuild janitor-tutorial (https://entwickler.de/programmierung/kotlin-ein-tutorial-fur-einsteiger) with current dependencies
