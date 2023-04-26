@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.8.0"
+    application
 }
 
 group = "com.uwefuchs.demo.kotlin.myjanitor"
@@ -10,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":pocket-api"))
+    implementation(project(":pocket-api"))
     testImplementation(kotlin("test"))
 }
 
@@ -20,4 +21,8 @@ tasks.test {
 
 kotlin {
     jvmToolchain(17)
+}
+
+application {
+    mainClass.set("JanitorKt")
 }
