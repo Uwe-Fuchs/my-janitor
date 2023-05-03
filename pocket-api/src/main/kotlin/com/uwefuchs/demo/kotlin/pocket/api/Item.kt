@@ -1,4 +1,6 @@
 package com.uwefuchs.demo.kotlin.pocket.api
 
-data class Item(val id: Long, val added: Long, val title: String) {
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class Item(@JsonProperty("item_id") val id: Long, @JsonProperty("time_added") val added: Long, @JsonProperty("resolved_title") val title: String) {
 }
