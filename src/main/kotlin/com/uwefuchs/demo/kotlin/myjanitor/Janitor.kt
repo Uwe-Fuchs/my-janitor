@@ -7,5 +7,6 @@ fun main() {
     val version = "0.0.1";
     println("$name v$version");
 
-    val pocket = Pocket.connect();
+    val items = Pocket.connect("consumer", "access").retrieveOperations().items();
+    items.forEach(::println);
 }
