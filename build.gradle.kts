@@ -24,5 +24,5 @@ kotlin {
 }
 
 application {
-    mainClass.set("JanitorKt")
+    mainClass.set("com.uwefuchs.demo.kotlin.myjanitor.JanitorKt")
 }
