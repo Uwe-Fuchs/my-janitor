@@ -34,4 +34,20 @@ internal class Transport(private val client: OkHttpClient, private val mapper: O
 
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<T>() {});
     }
+
+    fun get(endpoint: String): RetrieveResponse {
+        val request = Request.Builder()
+            .url("$endpoint?consumer_key=$consumerKey&access_token=$accessToken")
+            .get()
+            .build();
+
+        val response = client
+            .newCall(request)
+            .execute();
+
+        return when(response.code) {
+            200 -> mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
+            else -> throw PocketException("Error when retrieving items from Pocket: [status ${response.code}]");
+        }
+    }
 }
