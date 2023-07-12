@@ -17,6 +17,6 @@ interface Pocket {
     fun retrieveOperations(): RetrieveOperations;
 
     companion object {
-        fun connect(): Pocket = PocketTemplate();
+        fun connect(consumerKey: String, accessToken: String): Pocket = PocketTemplate(consumerKey, accessToken);
     }
 }

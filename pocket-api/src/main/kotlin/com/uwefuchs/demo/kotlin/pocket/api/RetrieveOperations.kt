@@ -7,5 +7,5 @@ interface RetrieveOperations {
     /**
      * get all pocket-items
      */
-    fun items(state: State = State.UNREAD, sort: Sort = Sort.OLDEST, details: Details = Details.SIMPLE) = emptyList<Item>();
+    fun items(state: State = State.UNREAD, sort: Sort = Sort.OLDEST, details: Details = Details.SIMPLE): Collection<Item>;
 }
