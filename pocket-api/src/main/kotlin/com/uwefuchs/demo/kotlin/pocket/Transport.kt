@@ -27,10 +27,7 @@ internal class Transport(private val client: OkHttpClient, private val mapper: O
             .newCall(request)
             .execute();
 
-        if (!response.isSuccessful) {
-            val error = response.header("X-Error");
-            throw PocketException("$error [status ${response.code}]")
-        }
+        response.validate();
 
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<T>() {});
     }
@@ -45,9 +42,8 @@ internal class Transport(private val client: OkHttpClient, private val mapper: O
             .newCall(request)
             .execute();
 
-        return when(response.code) {
-            200 -> mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
-            else -> throw PocketException("Error when retrieving items from Pocket: [status ${response.code}]");
-        }
+        response.validate();
+
+        return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
     }
 }
