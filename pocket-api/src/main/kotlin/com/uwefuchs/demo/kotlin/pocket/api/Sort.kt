@@ -1,7 +1,7 @@
 package com.uwefuchs.demo.kotlin.pocket.api
 
 /**
- * The sorting of a collection of pocket-items
+ * Determines how [Item]s are sorted when retrieved from the Pocket API
  */
 enum class Sort(internal val value: String) {
     NEWEST("newest"),

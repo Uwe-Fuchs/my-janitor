@@ -1,7 +1,7 @@
 package com.uwefuchs.demo.kotlin.pocket.api
 
 /**
- * all operations around retrieving pocket-data
+ * Operations used to retrieve [Item]s from Pocket
  */
 interface RetrieveOperations {
     /**

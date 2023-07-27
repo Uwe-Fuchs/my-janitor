@@ -1,7 +1,7 @@
 package com.uwefuchs.demo.kotlin.pocket.api
 
 /**
- * all operations around modifying pocket-data
+ * Operations used to modify [Item]s in Pocket
  */
 interface ModifyOperations {
     fun archive(items: Collection<Item>);

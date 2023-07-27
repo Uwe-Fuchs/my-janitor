@@ -1,7 +1,7 @@
 package com.uwefuchs.demo.kotlin.pocket.api
 
 /**
- * the granularity of data when retrieving pocket-items
+ * Determines the granularity of information per [Item] that will be transferred
  */
 enum class Details(internal val value: String) {
     SIMPLE("simple"), COMPLETE("complete")
