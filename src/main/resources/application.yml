@@ -1,0 +1,5 @@
+pocket:
+#    consumer: "107828-b7066a48ced93f4862ba29d"
+#    access: "14bfcd85-acec-ed8c-22cc-55f9b5"
+    item:
+        maxage: 90
