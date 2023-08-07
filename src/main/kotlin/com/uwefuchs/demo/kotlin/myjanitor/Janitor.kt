@@ -7,13 +7,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
-class Janitor(@Value("\${pocket.consumerKey}") private val consumerKey: String,
-              @Value("\${pocket.accessToken}") private val accessToken: String) {
-    @Bean
-    open fun pocket(): Pocket {
-        return Pocket.connect(consumerKey, accessToken);
-    }
-}
+class Janitor {}
 
 fun main(args: Array<String>) {
     runApplication<Janitor> (*args)

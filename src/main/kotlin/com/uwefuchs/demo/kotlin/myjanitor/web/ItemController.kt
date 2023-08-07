@@ -1,4 +1,4 @@
-package com.uwefuchs.demo.kotlin.myjanitor
+package com.uwefuchs.demo.kotlin.myjanitor.web
 
 import com.uwefuchs.demo.kotlin.pocket.api.Pocket
 import com.uwefuchs.demo.kotlin.pocket.api.Sort
