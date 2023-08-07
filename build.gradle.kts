@@ -24,9 +24,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.11.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
 }
 
 allprojects {

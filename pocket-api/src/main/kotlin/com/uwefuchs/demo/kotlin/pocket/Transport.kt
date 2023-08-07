@@ -8,8 +8,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-internal class Transport(private val client: OkHttpClient, private val mapper: ObjectMapper, private val consumerKey: String, private val accessToken: String) {
-    private val mediaType: MediaType = "application/json; charset=utf-8".toMediaType();
+class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumerKey: String, val accessToken: String) {
+    val mediaType: MediaType = "application/json; charset=utf-8".toMediaType();
 
     inline fun <reified T: Any> post(payload: PocketRequest, endpoint: String): T {
         payload.accessToken = accessToken;

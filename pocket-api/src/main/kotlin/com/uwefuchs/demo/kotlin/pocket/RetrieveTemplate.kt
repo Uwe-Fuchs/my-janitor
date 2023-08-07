@@ -7,7 +7,7 @@ import com.uwefuchs.demo.kotlin.pocket.api.State
 import com.uwefuchs.demo.kotlin.pocket.api.Item
 
 
-internal class RetrieveTemplate(private val transport: Transport) : RetrieveOperations {
+class RetrieveTemplate(private val transport: Transport) : RetrieveOperations {
     private var endpoint = "https://getpocket.com/v3/get";
 
     constructor(transport: Transport, endpoint: String) : this(transport) {
@@ -15,8 +15,8 @@ internal class RetrieveTemplate(private val transport: Transport) : RetrieveOper
     }
 
     override fun items(state: State, sort: Sort, details: Details): Collection<Item> {
-        val retrieve = Retrieve(state.value, sort.value, details.value);
-        val result: RetrieveResponse = transport.post(retrieve, endpoint);
+        val retrieveRequest = RetrieveRequest(state.value, sort.value, details.value);
+        val result: RetrieveResponse = transport.post(retrieveRequest, endpoint);
         //val result: RetrieveResponse = transport.get(endpoint);
         return result
             .items

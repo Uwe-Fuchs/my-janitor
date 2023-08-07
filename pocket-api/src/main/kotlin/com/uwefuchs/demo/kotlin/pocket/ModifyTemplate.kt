@@ -3,7 +3,7 @@ package com.uwefuchs.demo.kotlin.pocket
 import com.uwefuchs.demo.kotlin.pocket.api.Item
 import com.uwefuchs.demo.kotlin.pocket.api.ModifyOperations
 
-internal class ModifyTemplate(private val transport: Transport) : ModifyOperations {
+class ModifyTemplate(private val transport: Transport) : ModifyOperations {
     private var endpoint = "https://getpocket.com/v3/send";
 
     constructor(transport: Transport, endpoint: String) : this(transport) {
