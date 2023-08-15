@@ -11,7 +11,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumerKey: String, val accessToken: String) {
     val mediaType: MediaType = "application/json; charset=utf-8".toMediaType();
 
-    inline fun <reified T: Any> post(payload: PocketRequest, endpoint: String): T {
+    fun  post(payload: PocketRequest, endpoint: String): RetrieveResponse {
         payload.accessToken = accessToken;
         payload.consumerKey = consumerKey;
 
@@ -28,7 +28,7 @@ class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumer
 
         response.validate();
 
-        return mapper.readValue(response.body?.byteStream(), object: TypeReference<T>() {});
+        return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
     }
 
     fun get(endpoint: String): RetrieveResponse {
