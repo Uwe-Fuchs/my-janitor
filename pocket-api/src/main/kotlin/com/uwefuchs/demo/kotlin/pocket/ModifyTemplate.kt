@@ -10,15 +10,15 @@ class ModifyTemplate(private val transport: Transport) : ModifyOperations {
         this.endpoint = endpoint
     }
 
-    override fun archive(items: Collection<Item>) {
-        execute(items.map { Action.Archive(it) });
+    override fun archive(itemIds: Collection<String>) {
+        execute(itemIds.map { Action.Archive(it) });
     }
 
-    override fun delete(items: Collection<Item>) {
-        execute(items.map { Action.Delete(it) });
+    override fun delete(itemIds: Collection<String>) {
+        execute(itemIds.map { Action.Delete(it) });
     }
 
     private fun execute(actions: Collection<Action>) {
-        transport.post(ModifyRequest(actions), endpoint);
+        transport.archive(ModifyRequest(actions), endpoint);
     }
 }

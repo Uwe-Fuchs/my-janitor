@@ -1,5 +1,6 @@
 package com.uwefuchs.demo.kotlin.myjanitor.web
 
+import com.uwefuchs.demo.kotlin.pocket.api.Item
 import com.uwefuchs.demo.kotlin.pocket.api.Pocket
 import com.uwefuchs.demo.kotlin.pocket.api.Sort
 import org.springframework.beans.factory.annotation.Autowired
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 class ItemController(@Autowired private val pocket: Pocket)  {
@@ -24,6 +26,21 @@ class ItemController(@Autowired private val pocket: Pocket)  {
 
         return "items/overview"
     }
+
+    @GetMapping("/items/delete")
+    fun delete(@RequestParam(required = true) id: String): String {
+        pocket.modifyOperations().delete(id);
+
+        return "redirect:/items"
+    }
+
+    @GetMapping("/items/archive")
+    fun archive(@RequestParam(required = true) id: String): String {
+        pocket.modifyOperations().archive(id);
+
+        return "redirect:/items"
+    }
+
 
     @ExceptionHandler
     fun error(model: Model, cause: Exception): String {

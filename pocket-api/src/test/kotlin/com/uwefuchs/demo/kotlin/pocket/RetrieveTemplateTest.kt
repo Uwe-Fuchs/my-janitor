@@ -49,8 +49,8 @@ class RetrieveTemplateTest {
         val resultUnread: Collection<Item> = retrieveOperations.items(state = State.UNREAD);
 
         // then
-        assertThat(itemListUnread).containsAll(itemListUnread);
-        assertThat(itemListUnread).doesNotContain(itemListAll[0], itemListAll[4]);
+        assertThat(resultUnread).containsAll(itemListUnread);
+        assertThat(resultUnread).doesNotContain(itemListAll[0], itemListAll[4]);
     }
 
     @Test

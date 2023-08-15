@@ -4,11 +4,11 @@ package com.uwefuchs.demo.kotlin.pocket.api
  * Operations used to modify [Item]s in Pocket
  */
 interface ModifyOperations {
-    fun archive(items: Collection<Item>);
+    fun archive(itemIds: Collection<String>);
 
-    fun archive(item: Item) = archive(listOf(item));
+    fun archive(itemId: String) = archive(listOf(itemId));
 
-    fun delete(items: Collection<Item>);
+    fun delete(itemIds: Collection<String>);
 
-    fun delete(item: Item) = delete(listOf(item));
+    fun delete(itemId: String) = delete(listOf(itemId));
 }

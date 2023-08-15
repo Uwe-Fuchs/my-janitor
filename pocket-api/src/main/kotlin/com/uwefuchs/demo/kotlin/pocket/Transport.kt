@@ -7,11 +7,36 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 
 class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumerKey: String, val accessToken: String) {
     val mediaType: MediaType = "application/json; charset=utf-8".toMediaType();
 
-    fun  post(payload: PocketRequest, endpoint: String): RetrieveResponse {
+    fun post(payload: PocketRequest, endpoint: String): RetrieveResponse {
+        val response = execute(payload, endpoint);
+        return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
+    }
+
+    fun archive(payload: PocketRequest, endpoint: String) {
+        execute(payload, endpoint);
+    }
+
+    fun get(endpoint: String): RetrieveResponse {
+        val request = Request.Builder()
+            .url("$endpoint?consumer_key=$consumerKey&access_token=$accessToken")
+            .get()
+            .build();
+
+        val response = client
+            .newCall(request)
+            .execute();
+
+        response.validate();
+
+        return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
+    }
+
+    private fun execute(payload: PocketRequest, endpoint: String): Response {
         payload.accessToken = accessToken;
         payload.consumerKey = consumerKey;
 
@@ -28,21 +53,6 @@ class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumer
 
         response.validate();
 
-        return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
-    }
-
-    fun get(endpoint: String): RetrieveResponse {
-        val request = Request.Builder()
-            .url("$endpoint?consumer_key=$consumerKey&access_token=$accessToken")
-            .get()
-            .build();
-
-        val response = client
-            .newCall(request)
-            .execute();
-
-        response.validate();
-
-        return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
+        return response;
     }
 }
