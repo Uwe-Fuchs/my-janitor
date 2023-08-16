@@ -17,8 +17,9 @@ class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumer
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
     }
 
-    fun archive(payload: PocketRequest, endpoint: String) {
-        execute(payload, endpoint);
+    fun archive(payload: PocketRequest, endpoint: String): ModifyResponse {
+        val response = execute(payload, endpoint);
+        return mapper.readValue(response.body?.byteStream(), object: TypeReference<ModifyResponse>() {});
     }
 
     fun get(endpoint: String): RetrieveResponse {

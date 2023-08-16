@@ -2,6 +2,7 @@ package com.uwefuchs.demo.kotlin.myjanitor.web
 
 import com.uwefuchs.demo.kotlin.pocket.api.Item
 import com.uwefuchs.demo.kotlin.pocket.api.Pocket
+import com.uwefuchs.demo.kotlin.pocket.api.PocketException
 import com.uwefuchs.demo.kotlin.pocket.api.Sort
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -13,30 +14,48 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller
 class ItemController(@Autowired private val pocket: Pocket)  {
     @GetMapping("/")
-    fun home() = "redirect:/items"
+    fun home() = "redirect:/items";
 
     @GetMapping("/items")
     fun overview(model: Model): String {
-        val items = pocket.retrieveOperations().items(sort = Sort.NEWEST)
+        val items = pocket.retrieveOperations().items(sort = Sort.NEWEST);
 
         with(model) {
-            addAttribute("items", items)
-            addAttribute("count", items.size)
+            addAttribute("items", items);
+            addAttribute("count", items.size);
         }
 
-        return "items/overview"
+        return "items/overview";
     }
 
     @GetMapping("/items/delete")
-    fun delete(@RequestParam(required = true) id: String): String {
-        pocket.modifyOperations().delete(id);
+    fun delete(@RequestParam(required = true) id: String, model: Model): String {
+        val success = pocket.modifyOperations().delete(id);
 
-        return "redirect:/items"
+        if (!success) {
+            throw PocketException("Item could not be deleted!");
+        }
+
+        with(model) {
+            addAttribute("success", true);
+            addAttribute("action", "deleted");
+        }
+
+        return "redirect:/items";
     }
 
     @GetMapping("/items/archive")
-    fun archive(@RequestParam(required = true) id: String): String {
-        pocket.modifyOperations().archive(id);
+    fun archive(@RequestParam(required = true) id: String, model: Model): String {
+        val success = pocket.modifyOperations().archive(id);
+
+        if (!success) {
+            throw PocketException("Item could not be archived!");
+        }
+
+        with(model) {
+            addAttribute("success", true);
+            addAttribute("action", "archived");
+        }
 
         return "redirect:/items"
     }
