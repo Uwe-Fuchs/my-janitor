@@ -6,7 +6,10 @@ import com.uwefuchs.demo.kotlin.pocket.api.Sort
 import com.uwefuchs.demo.kotlin.pocket.api.State
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class RetrieveTemplateTest {
     private val endpoint = "http://test.de";
@@ -14,16 +17,19 @@ class RetrieveTemplateTest {
     @Test
     fun `retrieve items success`() {
         // given
-        val itemList = buildItemList(5);
-        val transport: Transport = mock<Transport> {
-            on { post(any(), eq(endpoint)) } doReturn RetrieveResponse(itemList.associateBy { it.id })
-        }
-        val retrieveOperations = RetrieveTemplate(transport, endpoint);
+        val listCount = 5;
+        val itemList = buildItemList(listCount);
+        val retrieveRequest = RetrieveRequest(State.ALL.value, Sort.OLDEST.value, Details.SIMPLE.value);
+        val transport: Transport = mock<Transport>();
+        whenever(transport.post(eq(retrieveRequest), eq(endpoint)))
+            .thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
 
         // when
-        val result: Collection<Item> = retrieveOperations.items();
+        val classUnderTest = RetrieveTemplate(transport, endpoint);
+        val result: Collection<Item> = classUnderTest.items(state = State.ALL);
 
         // then
+        assertThat(result).hasSize(listCount);
         assertThat(result).containsAll(itemList);
     }
 
@@ -31,39 +37,32 @@ class RetrieveTemplateTest {
     fun `retrieve items filter unread`() {
         // given
         val itemListAll = buildItemList(5);
-        val retrieveRequestAll = RetrieveRequest(State.ALL.value, Sort.OLDEST.value, Details.SIMPLE.value);
         val itemListUnread = itemListAll.subList(1, 3);
         val retrieveRequestUnread = RetrieveRequest(State.UNREAD.value, Sort.OLDEST.value, Details.SIMPLE.value);
         val transport: Transport = mock<Transport>();
-        whenever(transport.post(eq(retrieveRequestAll), eq(endpoint))).thenReturn(RetrieveResponse(itemListAll.associateBy { it.id }));
-        whenever(transport.post(eq(retrieveRequestUnread), eq(endpoint))).thenReturn(RetrieveResponse(itemListUnread.associateBy { it.id }));
-        val retrieveOperations = RetrieveTemplate(transport, endpoint);
+        whenever(transport.post(eq(retrieveRequestUnread), eq(endpoint)))
+            .thenReturn(RetrieveResponse(itemListUnread.associateBy { it.id }));
 
         // when
-        val resultAll: Collection<Item> = retrieveOperations.items(state = State.ALL);
+        val classUnderTest = RetrieveTemplate(transport, endpoint);
+        val result: Collection<Item> = classUnderTest.items(state = State.UNREAD);
 
         // then
-        assertThat(resultAll).containsAll(itemListAll);
-
-        // when
-        val resultUnread: Collection<Item> = retrieveOperations.items(state = State.UNREAD);
-
-        // then
-        assertThat(resultUnread).containsAll(itemListUnread);
-        assertThat(resultUnread).doesNotContain(itemListAll[0], itemListAll[4]);
+        assertThat(result).hasSize(2);
+        assertThat(result).containsAll(itemListUnread);
+        assertThat(result).doesNotContain(itemListAll[0], itemListAll[3], itemListAll[4]);
     }
 
     @Test
     fun `retrieve items emptyResult`() {
         // given
-        val transport: Transport = mock<Transport> {
-            on { post(any(), any()) } doReturn RetrieveResponse(emptyMap())
-        }
-
-        val retrieveOperations = RetrieveTemplate(transport, "http://test.de");
+        val itemList = buildItemList(0);
+        val transport: Transport = mock<Transport>();
+        whenever(transport.post(any(), any())).thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
 
         // when
-        val result: Collection<Item> = retrieveOperations.items();
+        val classUnderTest = RetrieveTemplate(transport, endpoint);
+        val result: Collection<Item> = classUnderTest.items();
 
         // then
         assertThat(result).isEmpty();

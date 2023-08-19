@@ -7,7 +7,8 @@ open class PocketRequest {
     @JsonProperty("consumer_key") lateinit var consumerKey: String;
 }
 
-internal data class RetrieveRequest(val state: String, val sort: String, @JsonProperty("detailType") val details: String) : PocketRequest() {
+internal data class RetrieveRequest(val state: String, val sort: String,
+                                    @JsonProperty("detailType") val details: String) : PocketRequest() {
 }
 
 internal data class ModifyRequest(val actions: Collection<Action>) : PocketRequest() {
