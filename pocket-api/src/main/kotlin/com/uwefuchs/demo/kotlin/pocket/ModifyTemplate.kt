@@ -1,8 +1,6 @@
 package com.uwefuchs.demo.kotlin.pocket
 
-import com.uwefuchs.demo.kotlin.pocket.api.Item
 import com.uwefuchs.demo.kotlin.pocket.api.ModifyOperations
-import com.uwefuchs.demo.kotlin.pocket.api.PocketException
 
 class ModifyTemplate(private val transport: Transport) : ModifyOperations {
     private var endpoint = "https://getpocket.com/v3/send";
@@ -20,7 +18,7 @@ class ModifyTemplate(private val transport: Transport) : ModifyOperations {
     }
 
     private fun execute(actions: Collection<Action>): Boolean {
-        val response = transport.archive(ModifyRequest(actions), endpoint);
+        val response = transport.modify(ModifyRequest(actions), endpoint);
         return response.status == 1;
     }
 }

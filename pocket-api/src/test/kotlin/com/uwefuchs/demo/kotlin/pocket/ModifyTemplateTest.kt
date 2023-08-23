@@ -10,6 +10,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.whenever
+import kotlin.reflect.KClass
 
 class ModifyTemplateTest {
     private val endpoint = "http://test.de";
@@ -25,27 +26,27 @@ class ModifyTemplateTest {
     @Test
     fun `archive a list of items`() {
         // given
-        val idList = listOf("id_1", "id_2");
-        val modifyRequest = ModifyRequest(idList.map { id -> Action.Archive(id) });
-        whenever(transport.archive(eq(modifyRequest), eq(endpoint))).thenReturn(ModifyResponse(1));
+        val ids = arrayOf("id_1", "id_2");
+        val archiveRequest = createModifyRequest(Action.Archive::class, *ids);
+        whenever(transport.modify(eq(archiveRequest), eq(endpoint))).thenReturn(ModifyResponse(1));
 
         // when
         val classUnderTest = ModifyTemplate(transport, endpoint);
-        val result = classUnderTest.archive(idList);
+        val result = classUnderTest.archive(ids.asList());
 
         // then
         assertThat(result).isTrue();
-        verify(transport, times(1)).archive(modifyRequestCaptor.capture(), eq(endpoint));
-        assertThat(modifyRequestCaptor.firstValue).isEqualTo(modifyRequest);
+        verify(transport, times(1)).modify(modifyRequestCaptor.capture(), eq(endpoint));
+        assertThat(modifyRequestCaptor.firstValue).isEqualTo(archiveRequest);
     }
 
     @Test
     fun `archive a single item`() {
         // given
         val givenId = "id_1";
-        val modifyRequest = ModifyRequest(listOf(Action.Archive(givenId)));
+        val archiveRequest = createModifyRequest(Action.Archive::class, givenId);
         val endpointCaptor = argumentCaptor<String>();
-        whenever(transport.archive(eq(modifyRequest), eq(endpoint))).thenReturn(ModifyResponse(1));
+        whenever(transport.modify(eq(archiveRequest), eq(endpoint))).thenReturn(ModifyResponse(1));
 
         // when
         val classUnderTest = ModifyTemplate(transport, endpoint);
@@ -53,16 +54,52 @@ class ModifyTemplateTest {
 
         // then
         assertThat(result).isTrue();
-        verify(transport, times(1)).archive(modifyRequestCaptor.capture(), endpointCaptor.capture());
-        assertThat(modifyRequestCaptor.firstValue).isEqualTo(modifyRequest);
+        verify(transport, times(1)).modify(modifyRequestCaptor.capture(), endpointCaptor.capture());
+        assertThat(modifyRequestCaptor.firstValue).isEqualTo(archiveRequest);
         assertThat(endpointCaptor.firstValue).isEqualTo(endpoint);
     }
 
-//    @Test
-//    fun `delete a list of items`() {
-//    }
-//
-//    @Test
-//    fun `delete a single item`() {
-//    }
+    @Test
+    fun `delete a list of items`() {
+        // given
+        val ids = arrayOf("id_1", "id_2");
+        val deleteRequest = createModifyRequest(Action.Delete::class, *ids);
+        whenever(transport.modify(eq(deleteRequest), eq(endpoint))).thenReturn(ModifyResponse(1));
+
+        // when
+        val classUnderTest = ModifyTemplate(transport, endpoint);
+        val result = classUnderTest.delete(ids.asList());
+
+        // then
+        assertThat(result).isTrue();
+        verify(transport, times(1)).modify(modifyRequestCaptor.capture(), eq(endpoint));
+        assertThat(modifyRequestCaptor.firstValue).isEqualTo(deleteRequest);
+    }
+
+    @Test
+    fun `delete a single item`() {
+        // given
+        val givenId = "id_1";
+        val archiveRequest = createModifyRequest(Action.Delete::class, givenId);
+        val endpointCaptor = argumentCaptor<String>();
+        whenever(transport.modify(eq(archiveRequest), eq(endpoint))).thenReturn(ModifyResponse(1));
+
+        // when
+        val classUnderTest = ModifyTemplate(transport, endpoint);
+        val result = classUnderTest.delete(givenId);
+
+        // then
+        assertThat(result).isTrue();
+        verify(transport, times(1)).modify(modifyRequestCaptor.capture(), endpointCaptor.capture());
+        assertThat(modifyRequestCaptor.firstValue).isEqualTo(archiveRequest);
+        assertThat(endpointCaptor.firstValue).isEqualTo(endpoint);
+    }
+
+    private fun <A: Action> createModifyRequest(modifyType: KClass<A>, vararg ids : String): ModifyRequest {
+        return when (modifyType) {
+            Action.Archive::class -> ModifyRequest(ids.map { id -> Action.Archive(id) });
+            Action.Delete::class -> ModifyRequest(ids.map { id -> Action.Delete(id) });
+            else -> throw RuntimeException("wrong Action-Type!")
+        };
+    }
 }

@@ -12,12 +12,12 @@ import okhttp3.Response
 class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumerKey: String, val accessToken: String) {
     val mediaType: MediaType = "application/json; charset=utf-8".toMediaType();
 
-    fun post(payload: PocketRequest, endpoint: String): RetrieveResponse {
+    fun retrieve(payload: PocketRequest, endpoint: String): RetrieveResponse {
         val response = execute(payload, endpoint);
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
     }
 
-    fun archive(payload: PocketRequest, endpoint: String): ModifyResponse {
+    fun modify(payload: PocketRequest, endpoint: String): ModifyResponse {
         val response = execute(payload, endpoint);
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<ModifyResponse>() {});
     }

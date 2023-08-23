@@ -21,7 +21,7 @@ class RetrieveTemplateTest {
         val itemList = buildItemList(listCount);
         val retrieveRequest = RetrieveRequest(State.ALL.value, Sort.OLDEST.value, Details.SIMPLE.value);
         val transport: Transport = mock<Transport>();
-        whenever(transport.post(eq(retrieveRequest), eq(endpoint)))
+        whenever(transport.retrieve(eq(retrieveRequest), eq(endpoint)))
             .thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
 
         // when
@@ -40,7 +40,7 @@ class RetrieveTemplateTest {
         val itemListUnread = itemListAll.subList(1, 3);
         val retrieveRequestUnread = RetrieveRequest(State.UNREAD.value, Sort.OLDEST.value, Details.SIMPLE.value);
         val transport: Transport = mock<Transport>();
-        whenever(transport.post(eq(retrieveRequestUnread), eq(endpoint)))
+        whenever(transport.retrieve(eq(retrieveRequestUnread), eq(endpoint)))
             .thenReturn(RetrieveResponse(itemListUnread.associateBy { it.id }));
 
         // when
@@ -58,7 +58,7 @@ class RetrieveTemplateTest {
         // given
         val itemList = buildItemList(0);
         val transport: Transport = mock<Transport>();
-        whenever(transport.post(any(), any())).thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
+        whenever(transport.retrieve(any(), any())).thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
 
         // when
         val classUnderTest = RetrieveTemplate(transport, endpoint);

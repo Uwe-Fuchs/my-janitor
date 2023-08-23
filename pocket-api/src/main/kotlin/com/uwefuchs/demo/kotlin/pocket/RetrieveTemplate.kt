@@ -16,7 +16,7 @@ class RetrieveTemplate(private val transport: Transport) : RetrieveOperations {
 
     override fun items(state: State, sort: Sort, details: Details): Collection<Item> {
         val retrieveRequest = RetrieveRequest(state.value, sort.value, details.value);
-        val result: RetrieveResponse = transport.post(retrieveRequest, endpoint);
+        val result: RetrieveResponse = transport.retrieve(retrieveRequest, endpoint);
         //val result: RetrieveResponse = transport.get(endpoint);
         return result
             .items
