@@ -1,23 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.uwefuchs.demo.kotlin.myjanitor.kotlin-application-conventions")
     id("org.springframework.boot") version "3.0.1"
     id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.8.0"
     id("org.jetbrains.dokka") version "1.8.10"
     kotlin("plugin.spring") version "1.8.0"
 }
 
 group = "com.uwefuchs.demo.kotlin.myjanitor"
-version = "0.0.4"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
-
-repositories {
-    mavenCentral()
-}
+version = "0.0.7"
 
 dependencies {
     implementation(project(":pocket-api"))
@@ -37,10 +29,6 @@ dependencies {
 
 allprojects {
     apply(plugin = "org.jetbrains.dokka")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {

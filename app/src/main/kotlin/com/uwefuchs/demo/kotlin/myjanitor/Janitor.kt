@@ -9,6 +9,6 @@ class Janitor {}
 fun main(args: Array<String>) {
     runApplication<Janitor> (*args)
     val name = "Janitor";
-    val version = "0.0.4";
+    val version = "0.0.7";
     println("$name v$version");
 }
