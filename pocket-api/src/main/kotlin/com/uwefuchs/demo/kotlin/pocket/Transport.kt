@@ -13,12 +13,12 @@ class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumer
     val mediaType: MediaType = "application/json; charset=utf-8".toMediaType();
 
     fun retrieve(payload: PocketRequest, endpoint: String): RetrieveResponse {
-        val response = execute(payload, endpoint);
+        val response = executePost(payload, endpoint);
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
     }
 
     fun modify(payload: PocketRequest, endpoint: String): ModifyResponse {
-        val response = execute(payload, endpoint);
+        val response = executePost(payload, endpoint);
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<ModifyResponse>() {});
     }
 
@@ -37,7 +37,7 @@ class Transport(val client: OkHttpClient, val mapper: ObjectMapper, val consumer
         return mapper.readValue(response.body?.byteStream(), object: TypeReference<RetrieveResponse>() {});
     }
 
-    private fun execute(payload: PocketRequest, endpoint: String): Response {
+    private fun executePost(payload: PocketRequest, endpoint: String): Response {
         payload.accessToken = accessToken;
         payload.consumerKey = consumerKey;
 
