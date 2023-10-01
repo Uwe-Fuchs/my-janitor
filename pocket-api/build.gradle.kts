@@ -1,26 +1,23 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.uwefuchs.demo.kotlin.myjanitor.kotlin-library-conventions")
+    `jvm-test-suite`
 }
+
+val assertJVersion = "3.24.2"
+val jacksonVersion = "2.15.0"
+val junitVersion = "5.9.1"
+val mockitoVersion = "5.0.0"
+val okHttpVersion = "4.11.0"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.11.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:$okHttpVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "17"
-}
 
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "17"
-}
