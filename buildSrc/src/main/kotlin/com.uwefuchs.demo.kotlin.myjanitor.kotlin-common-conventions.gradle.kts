@@ -1,6 +1,3 @@
-import gradle.kotlin.dsl.accessors._ff998d3f5c21290a9b6991bcf727e505.implementation
-import gradle.kotlin.dsl.accessors._ff998d3f5c21290a9b6991bcf727e505.testImplementation
-import gradle.kotlin.dsl.accessors._ff998d3f5c21290a9b6991bcf727e505.testRuntimeOnly
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
