@@ -13,7 +13,6 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.squareup.okhttp3:okhttp-urlconnection:$okHttpVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")

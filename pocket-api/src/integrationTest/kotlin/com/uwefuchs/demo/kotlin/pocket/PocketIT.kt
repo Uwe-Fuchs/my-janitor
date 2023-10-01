@@ -13,7 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 
-class PocketTest {
+class PocketIT {
     var server = MockWebServer();
 
     @Test
