@@ -1,3 +1,3 @@
 rootProject.name = "my-janitor"
 
-include("app", "pocket-api")
+include("shared", "app", "pocket-api")

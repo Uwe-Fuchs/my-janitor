@@ -1,8 +1,12 @@
+import gradle.kotlin.dsl.accessors._ff998d3f5c21290a9b6991bcf727e505.implementation
+import gradle.kotlin.dsl.accessors._ff998d3f5c21290a9b6991bcf727e505.testImplementation
+import gradle.kotlin.dsl.accessors._ff998d3f5c21290a9b6991bcf727e505.testRuntimeOnly
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm")
+    //`jvm-test-suite`
 }
 
 group = "com.uwefuchs.demo.kotlin.myjanitor"
@@ -25,6 +29,15 @@ dependencies {
         // Define dependency versions as constraints
         implementation("org.apache.commons:commons-text:1.9")
     }
+
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:$okHttpVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    testImplementation(kotlin("test"))
+    testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoVersion")
+    testImplementation("org.assertj:assertj-core:$assertJVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
 
 tasks.named<Test>("test") {
