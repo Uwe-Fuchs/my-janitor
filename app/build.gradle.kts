@@ -15,7 +15,10 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation(project(":shared"))
     testImplementation(project(":pocket-api"))
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    integrationTestImplementation(project(":shared"))
+    integrationTestImplementation(project(":pocket-api"))
+    integrationTestImplementation("org.springframework.boot:spring-boot-starter-test")
+    integrationTestImplementation("org.springframework.boot:spring-boot-starter-web")
 }
 
 allprojects {

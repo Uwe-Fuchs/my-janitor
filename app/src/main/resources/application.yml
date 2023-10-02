@@ -3,3 +3,6 @@ pocket:
     accessToken: "my_access_token"
     item:
         maxage: 90
+spring:
+    main:
+        allow-bean-definition-overriding: true

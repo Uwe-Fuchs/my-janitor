@@ -56,6 +56,7 @@ testing {
                 implementation("org.assertj:assertj-core:$assertJVersion")
                 implementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
                 implementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+                implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
             }
 
             testType.set(TestSuiteType.INTEGRATION_TEST)
