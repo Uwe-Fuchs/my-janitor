@@ -29,7 +29,7 @@ class ItemControllerTest {
     }
 
     @Test
-    fun overview() {
+    fun `given a valid request, item is retrieved`() {
         // given
         val itemsCount = 10;
         val items = itemsCount.buildItemList();

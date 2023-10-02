@@ -14,7 +14,7 @@ import org.mockito.Mockito.`when`
 
 
 class PocketIT {
-    var server = MockWebServer();
+    private val server = MockWebServer();
 
     @Test
     fun `given a valid request, item is retrieved`() {

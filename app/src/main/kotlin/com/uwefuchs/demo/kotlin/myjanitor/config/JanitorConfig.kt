@@ -46,7 +46,7 @@ class JanitorConfig(@Value("\${pocket.consumerKey}") private val consumerKey: St
     }
 
     @Bean
-    fun pocketTemplate(@Autowired modifyOperations: ModifyOperations, @Autowired retrieveOperations: RetrieveOperations): Pocket {
+    fun pocket(@Autowired modifyOperations: ModifyOperations, @Autowired retrieveOperations: RetrieveOperations): Pocket {
         return PocketTemplate(modifyOperations, retrieveOperations);
     }
 }

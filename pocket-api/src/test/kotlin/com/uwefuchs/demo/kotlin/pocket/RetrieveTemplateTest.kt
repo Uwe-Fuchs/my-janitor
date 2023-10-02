@@ -5,14 +5,22 @@ import com.uwefuchs.demo.kotlin.pocket.api.Item
 import com.uwefuchs.demo.kotlin.pocket.api.Sort
 import com.uwefuchs.demo.kotlin.pocket.api.State
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
 class RetrieveTemplateTest {
     private val endpoint = "http://test.de";
+    private lateinit var transport: Transport;
+
+    @BeforeEach
+    fun setUp() {
+        transport = mock<Transport>();
+    }
 
     @Test
     fun `retrieve items success`() {
@@ -20,7 +28,6 @@ class RetrieveTemplateTest {
         val listCount = 5;
         val itemList = buildItemList(listCount);
         val retrieveRequest = RetrieveRequest(State.ALL.value, Sort.OLDEST.value, Details.SIMPLE.value);
-        val transport: Transport = mock<Transport>();
         whenever(transport.retrieve(eq(retrieveRequest), eq(endpoint)))
             .thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
 
@@ -39,7 +46,6 @@ class RetrieveTemplateTest {
         val itemListAll = buildItemList(5);
         val itemListUnread = itemListAll.subList(1, 3);
         val retrieveRequestUnread = RetrieveRequest(State.UNREAD.value, Sort.OLDEST.value, Details.SIMPLE.value);
-        val transport: Transport = mock<Transport>();
         whenever(transport.retrieve(eq(retrieveRequestUnread), eq(endpoint)))
             .thenReturn(RetrieveResponse(itemListUnread.associateBy { it.id }));
 
@@ -57,7 +63,6 @@ class RetrieveTemplateTest {
     fun `retrieve items emptyResult`() {
         // given
         val itemList = buildItemList(0);
-        val transport: Transport = mock<Transport>();
         whenever(transport.retrieve(any(), any())).thenReturn(RetrieveResponse(itemList.associateBy { it.id }));
 
         // when
