@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(project(":shared"))
     testImplementation(project(":shared"))
+    integrationTestImplementation(project(":shared"))
 }
 
 

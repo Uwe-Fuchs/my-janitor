@@ -15,6 +15,7 @@ val jacksonVersion = "2.15.0"
 val junitVersion = "5.9.1"
 val mockitoVersion = "5.0.0"
 val okHttpVersion = "4.11.0"
+val mockServerVersion = "4.10.0"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -29,6 +30,7 @@ dependencies {
 
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.squareup.okhttp3:okhttp-urlconnection:$okHttpVersion")
+    implementation("com.squareup.okhttp3:mockwebserver:$mockServerVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     testImplementation(kotlin("test"))
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoVersion")
@@ -51,7 +53,7 @@ testing {
         register<JvmTestSuite>(inTestSuiteName) {
             dependencies {
                 implementation(project)
-                implementation("com.squareup.okhttp3:mockwebserver:4.10.0")
+                implementation("com.squareup.okhttp3:mockwebserver:$mockServerVersion")
                 implementation("org.mockito.kotlin:mockito-kotlin:$mockitoVersion")
                 implementation("org.assertj:assertj-core:$assertJVersion")
                 implementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")

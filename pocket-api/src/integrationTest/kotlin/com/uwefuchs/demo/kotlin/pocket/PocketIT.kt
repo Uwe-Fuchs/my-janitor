@@ -2,6 +2,7 @@ package com.uwefuchs.demo.kotlin.pocket
 
 import com.uwefuchs.demo.kotlin.pocket.api.Pocket
 import com.uwefuchs.demo.kotlin.pocket.api.PocketException
+import com.uwefuchs.demo.kotlin.pocket.testing.IntegrationTestHelper
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -22,7 +23,8 @@ class PocketIT {
         val id: Long = 229279689;
         val title = "A Test Title";
         val added: Long = 1471869712;
-        server.enqueue(item(id, title, added));
+        val myEntry = IntegrationTestHelper.createEntry(id, title, added, "https://techdev.de");
+        IntegrationTestHelper.moveEntriesToMockServer(myEntry, server);
 
         // when
         val items = pocket().retrieveOperations().items();
@@ -36,8 +38,9 @@ class PocketIT {
 
     @Test
     fun `given an item without title, no exception is thrown`() {
-        // given when
-        server.enqueue(itemWithoutTitle("http://someurl.com"));
+        // given
+        val myEntry = "\"229279689\": {\"item_id\": 229279689, \"time_added\": 1471869712, \"given_url\": \"https://techdev.de\"}";
+        IntegrationTestHelper.moveEntriesToMockServer(myEntry, server);
 
         // when
         val items = pocket().retrieveOperations().items();
@@ -52,7 +55,7 @@ class PocketIT {
         // given
         val errorMessage = "Missing API Key";
         val responseCode = 400;
-        server.enqueue(error(responseCode, errorMessage))
+        IntegrationTestHelper.createErrorResponse(responseCode, errorMessage, server);
 
         // when
         val thrown: Throwable = catchThrowable {
@@ -81,57 +84,5 @@ class PocketIT {
         `when`(pocket.retrieveOperations()).thenReturn(RetrieveTemplate(transport, server.url("/v3/get").toString()));
 
         return pocket;
-    }
-
-    private fun item(id: Long, title: String, added: Long): MockResponse {
-        val response = MockResponse();
-        response.setResponseCode(200);
-        response.setHeader("Content-Type", "application/json");
-        response.setBody(
-            """
-                {
-                    "status" : 1,
-                    "list" : {
-                        "$id" : {
-                            "item_id" : $id,
-                            "resolved_title" : "$title",
-                            "time_added" : $added,
-                            "given_url" : "https://techdev.de"
-                        }
-                    }
-                }
-            """
-        );
-
-        return response;
-    }
-
-    private fun itemWithoutTitle(url: String): MockResponse {
-        val response = MockResponse();
-        response.setResponseCode(200);
-        response.setHeader("Content-Type", "application/json");
-        response.setBody(
-            """
-                {
-                    "status" : 1,
-                    "list" : {
-                        "229279689" : {
-                            "item_id" : "229279689",
-                            "time_added" : "1471869712",
-                            "given_url" : "$url"
-                        }
-                    }
-                }
-            """
-        );
-
-        return response;
-    }
-
-    private fun error(responseCode: Int, errorMessage: String): MockResponse {
-        val response = MockResponse();
-        response.setResponseCode(responseCode);
-        response.setHeader("X-Error", errorMessage);
-        return response;
     }
 }
