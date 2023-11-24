@@ -3,7 +3,6 @@ package com.uwefuchs.demo.kotlin.pocket
 import com.uwefuchs.demo.kotlin.pocket.api.Pocket
 import com.uwefuchs.demo.kotlin.pocket.api.PocketException
 import com.uwefuchs.demo.kotlin.pocket.testing.IntegrationTestHelper
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
@@ -23,7 +22,7 @@ class PocketIT {
         val id: Long = 229279689;
         val title = "A Test Title";
         val added: Long = 1471869712;
-        val myEntry = IntegrationTestHelper.createEntry(id, title, added, "https://techdev.de");
+        val myEntry = IntegrationTestHelper.createEntry(id, title, added, "http://test.de");
         IntegrationTestHelper.moveEntriesToMockServer(myEntry, server);
 
         // when
@@ -39,8 +38,8 @@ class PocketIT {
     @Test
     fun `given an item without title, no exception is thrown`() {
         // given
-        val myEntry = "\"229279689\": {\"item_id\": 229279689, \"time_added\": 1471869712, \"given_url\": \"https://techdev.de\"}";
-        IntegrationTestHelper.moveEntriesToMockServer(myEntry, server);
+        val entryWithoutTitle = "\"229279689\": {\"item_id\": 229279689, \"time_added\": 1471869712, \"given_url\": \"http://test.de\"}";
+        IntegrationTestHelper.moveEntriesToMockServer(entryWithoutTitle, server);
 
         // when
         val items = pocket().retrieveOperations().items();
@@ -53,7 +52,7 @@ class PocketIT {
     @Test
     fun `given a bad request, PocketException is thrown`() {
         // given
-        val errorMessage = "Missing API Key";
+        val errorMessage = "Access-Token missing or invalid";
         val responseCode = 400;
         IntegrationTestHelper.createErrorResponse(responseCode, errorMessage, server);
 
@@ -65,6 +64,38 @@ class PocketIT {
         // then
         assertThat(thrown::class).isEqualTo(PocketException::class);
         assertThat(thrown.message).contains(errorMessage, StringBuilder(responseCode));
+    }
+
+    @Test
+    fun `delete a single item`() {
+        // given
+        // two responses: 1st for deletion, 2nd for check
+        IntegrationTestHelper.moveEntriesToMockServer("", server);
+        IntegrationTestHelper.moveEntriesToMockServer("", server);
+
+        // when
+        val success = pocket().modifyOperations().delete("someId");
+
+        // then
+        assertThat(success).isTrue();
+        val items = pocket().retrieveOperations().items();
+        assertThat(items).hasSize(0);
+    }
+
+    @Test
+    fun `archive a single item`() {
+        // given
+        // two responses: 1st for deletion, 2nd for check
+        IntegrationTestHelper.moveEntriesToMockServer("", server);
+        IntegrationTestHelper.moveEntriesToMockServer("", server);
+
+        // when
+        val success = pocket().modifyOperations().archive("someId");
+
+        // then
+        assertThat(success).isTrue();
+        val items = pocket().retrieveOperations().items();
+        assertThat(items).hasSize(0);
     }
 
     @BeforeEach
