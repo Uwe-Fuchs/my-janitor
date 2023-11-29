@@ -4,7 +4,10 @@ import com.uwefuchs.demo.kotlin.myjanitor.config.JanitorTestConfig
 import com.uwefuchs.demo.kotlin.pocket.ModifyTemplate
 import com.uwefuchs.demo.kotlin.pocket.RetrieveTemplate
 import com.uwefuchs.demo.kotlin.pocket.api.Item
+import com.uwefuchs.demo.kotlin.pocket.api.Pocket
+import com.uwefuchs.demo.kotlin.pocket.api.PocketException
 import com.uwefuchs.demo.kotlin.pocket.testing.IntegrationTestHelper
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -42,8 +45,11 @@ class ItemControllerIT {
     @Autowired
     lateinit var retrieveTemplate: RetrieveTemplate;
 
+    @Autowired
+    lateinit var pocket: Pocket;
+
     @Test
-    fun `given a valid request, item is retrieved`() {
+    fun `given a valid request, items are retrieved`() {
         // given
         val itemCount = 3;
         val createdItems: Collection<Item> = createItemListAndMoveEntriesToMockServer(itemCount);
@@ -60,8 +66,7 @@ class ItemControllerIT {
         .andReturn();
 
         val modelAndView: ModelAndView = result.modelAndView ?: ModelAndView();    // Elvis-Operator :-)
-        val modelMap = modelAndView.modelMap;
-        val resultItems = modelMap["items"] as Collection<*>;
+        val resultItems = modelAndView.modelMap["items"] as Collection<*>;
         assertThat(resultItems).containsAll(createdItems);
     }
 
@@ -81,9 +86,9 @@ class ItemControllerIT {
         .andReturn();
 
         mockMvc.perform(get("/items"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("items/overview"))
-            .andExpect(model().attribute("count", 1));
+        .andExpect(status().isOk())
+        .andExpect(view().name("items/overview"))
+        .andExpect(model().attribute("count", 1));
     }
 
     @Test
@@ -105,6 +110,64 @@ class ItemControllerIT {
             .andExpect(status().isOk())
             .andExpect(view().name("items/overview"))
             .andExpect(model().attribute("count", 1));
+    }
+
+    @Test
+    fun error() {
+        // given
+        val httpStatusCode = 503;
+        val response = MockResponse();
+        response.setResponseCode(httpStatusCode);
+        server.enqueue(response);
+
+        // when
+        val result: MvcResult = mockMvc.perform(get("/items"))
+
+        // then
+        .andExpect(status().isOk())
+        .andExpect(view().name("error"))
+        .andExpect(model().attributeExists("cause"))
+        .andReturn();
+
+        val modelAndView: ModelAndView = result.modelAndView ?: ModelAndView();
+        val resultError = modelAndView.modelMap["cause"] as PocketException;
+        assertThat(resultError.message).isEqualTo("Error during Pocket-operation: null [status $httpStatusCode]");
+    }
+
+    @Test
+    fun `deletion failure`() {
+        // given
+        val response = MockResponse();
+        response.setResponseCode(503);
+        server.enqueue(MockResponse());
+
+        // when
+        mockMvc.perform(get("/items/delete")
+            .queryParam("id", "someId"))
+
+        // then
+        .andExpect(status().isOk())
+        .andExpect(view().name("error"))
+        .andExpect(model().attributeExists("cause"))
+        .andReturn();
+    }
+
+    @Test
+    fun `archive failure`() {
+        // given
+        val response = MockResponse();
+        response.setResponseCode(503);
+        server.enqueue(MockResponse());
+
+        // when
+        mockMvc.perform(get("/items/archive")
+            .queryParam("id", "someId"))
+
+        // then
+        .andExpect(status().isOk())
+        .andExpect(view().name("error"))
+        .andExpect(model().attributeExists("cause"))
+        .andReturn();
     }
 
     @BeforeEach
