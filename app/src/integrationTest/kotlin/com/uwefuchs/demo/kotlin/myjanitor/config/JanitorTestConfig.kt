@@ -11,7 +11,6 @@ import com.uwefuchs.demo.kotlin.pocket.api.ModifyOperations
 import com.uwefuchs.demo.kotlin.pocket.api.Pocket
 import com.uwefuchs.demo.kotlin.pocket.api.RetrieveOperations
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.MockWebServer
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -23,11 +22,6 @@ import org.springframework.context.annotation.ComponentScan
 @ComponentScan("com.uwefuchs.demo.kotlin.pocket")
 class JanitorTestConfig(@Value("\${pocket.consumerKey}") private val consumerKey: String,
                         @Value("\${pocket.accessToken}") private val accessToken: String) {
-    @Bean
-    fun mockWebServer(): MockWebServer {
-        return MockWebServer();
-    }
-
     private fun client(): OkHttpClient {
         return OkHttpClient.Builder().addInterceptor(PocketInterceptor).build();
     }
@@ -42,13 +36,13 @@ class JanitorTestConfig(@Value("\${pocket.consumerKey}") private val consumerKey
     }
 
     @Bean
-    fun modifyOperations(@Autowired server: MockWebServer, @Autowired transport: Transport): ModifyOperations {
-        return ModifyTemplate(transport, server.url("/v3/send").toString())
+    fun modifyOperations(@Autowired transport: Transport): ModifyOperations {
+        return ModifyTemplate(transport)
     }
 
     @Bean
-    fun retrieveOperations(@Autowired server: MockWebServer, @Autowired transport: Transport): RetrieveOperations {
-        return RetrieveTemplate(transport, server.url("/v3/get").toString());
+    fun retrieveOperations(@Autowired transport: Transport): RetrieveOperations {
+        return RetrieveTemplate(transport);
     }
 
     @Bean

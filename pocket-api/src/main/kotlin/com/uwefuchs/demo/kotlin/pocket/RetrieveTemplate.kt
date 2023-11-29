@@ -8,7 +8,7 @@ import com.uwefuchs.demo.kotlin.pocket.api.Item
 
 
 class RetrieveTemplate(private val transport: Transport) : RetrieveOperations {
-    private var endpoint = "https://getpocket.com/v3/get";
+    var endpoint = "https://getpocket.com/v3/get";
 
     constructor(transport: Transport, endpoint: String) : this(transport) {
         this.endpoint = endpoint

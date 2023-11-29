@@ -1,12 +1,14 @@
 package com.uwefuchs.demo.kotlin.myjanitor.web
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.uwefuchs.demo.kotlin.pocket.testing.IntegrationTestHelper
 import com.uwefuchs.demo.kotlin.myjanitor.config.JanitorTestConfig
+import com.uwefuchs.demo.kotlin.pocket.ModifyTemplate
+import com.uwefuchs.demo.kotlin.pocket.RetrieveTemplate
 import com.uwefuchs.demo.kotlin.pocket.api.Item
+import com.uwefuchs.demo.kotlin.pocket.testing.IntegrationTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,13 +31,16 @@ import org.springframework.web.servlet.ModelAndView
 @Import(JanitorTestConfig::class)
 @AutoConfigureMockMvc
 class ItemControllerIT {
+    private val server = MockWebServer();
+
     @Autowired
     lateinit var mockMvc: MockMvc;
 
     @Autowired
-    lateinit var server: MockWebServer;
+    lateinit var modifyTemplate: ModifyTemplate;
 
-    @JsonProperty("list") var items: Map<Long, Item> = HashMap();
+    @Autowired
+    lateinit var retrieveTemplate: RetrieveTemplate;
 
     @Test
     fun `given a valid request, item is retrieved`() {
@@ -54,10 +59,59 @@ class ItemControllerIT {
         .andExpect(model().attributeExists("items"))
         .andReturn();
 
-        val modelAndView: ModelAndView = result.modelAndView as? ModelAndView ?: ModelAndView();    // Elvis-Operator :-)
+        val modelAndView: ModelAndView = result.modelAndView ?: ModelAndView();    // Elvis-Operator :-)
         val modelMap = modelAndView.modelMap;
         val resultItems = modelMap["items"] as Collection<*>;
         assertThat(resultItems).containsAll(createdItems);
+    }
+
+    @Test
+    fun `delete a single item`() {
+        // given
+        createItemListAndMoveEntriesToMockServer(2);
+        createItemListAndMoveEntriesToMockServer(1);
+
+        // when
+        mockMvc.perform(get("/items/delete")
+            .queryParam("id", "someId"))
+
+        // then
+        .andExpect(status().is3xxRedirection())
+        .andExpect(view().name("redirect:/items"))
+        .andReturn();
+
+        mockMvc.perform(get("/items"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("items/overview"))
+            .andExpect(model().attribute("count", 1));
+    }
+
+    @Test
+    fun `archive a single item`() {
+        // given
+        createItemListAndMoveEntriesToMockServer(2);
+        createItemListAndMoveEntriesToMockServer(1);
+
+        // when
+        mockMvc.perform(get("/items/archive")
+            .queryParam("id", "someId"))
+
+        // then
+        .andExpect(status().is3xxRedirection())
+        .andExpect(view().name("redirect:/items"))
+        .andReturn();
+
+        mockMvc.perform(get("/items"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("items/overview"))
+            .andExpect(model().attribute("count", 1));
+    }
+
+    @BeforeEach
+    fun setUp() {
+        server.start();
+        retrieveTemplate.endpoint = server.url("/v3/get").toString();
+        modifyTemplate.endpoint = server.url("/v3/send").toString();
     }
 
     @AfterEach
